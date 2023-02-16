@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
             bool userExists = _Helper.UserAlreadyExists(UserExistQuery);
             if (userExists == true)
             {
-                return BadRequest("Username and Email Already Exists Try Other");
+                return BadRequest("Username Already Exists Try Other");
             }
             string Query = $"INSERT INTO [UserTable] (Username, Password) VALUES ('{user.Username}','{user.PasswordHash}')";
 

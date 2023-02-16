@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using WebAPI.Models;
 using WebAPI.Services.DeviceService;
 
@@ -54,7 +55,10 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> AddDevice(DeviceModel device)
         {
             var result = await _DeviceService.AddDevice(device);
-            return Ok(result);
+            if (result.Count == 0)
+                return BadRequest("Device already existed");
+
+                return Ok(result);
         }
 
         [Route("AddOrder")]
