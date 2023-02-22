@@ -8,6 +8,6 @@ public class OrderHistory
     public long Imei { get; set; }
     public string? OrderType { get; set; }
     public string? DeviceName { get; set; }
-    public bool InSent { get; set; } = false;
+    public short InSent { get; set; } = 0;
     public DateTime CreatedDate { get; set; } = DateTime.Now;
 }

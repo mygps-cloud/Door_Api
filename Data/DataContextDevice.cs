@@ -3,9 +3,9 @@ using WebAPI.Models;
 
 namespace WebAPI.Data;
 
-public class DataContext : DbContext
+public class DataContextDevice : DbContext
 {
-    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    public DataContextDevice(DbContextOptions<DataContextDevice> options) : base(options)
     {
     }
     public DbSet<DeviceModel> DoorInformationUPDATED { get; set; }

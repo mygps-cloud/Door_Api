@@ -6,9 +6,9 @@ namespace WebAPI.Services.DeviceService;
 
 public class DeviceService : IDeviceService
 {
-    private readonly DataContext _context;
+    private readonly DataContextDevice _context;
 
-    public DeviceService(DataContext context)
+    public DeviceService(DataContextDevice context)
     {
         _context = context;
     }
