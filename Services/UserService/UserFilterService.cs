@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Register.ViewModels;
-using Registration.Helpers;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using WebAPI.Data;
 using WebAPI.Models.UserModel;
 using WebAPI.Services.UserService;
 using static Org.BouncyCastle.Math.EC.ECCurve;
@@ -14,9 +14,9 @@ namespace WebAPI.Services.DeviceService
     public class UserFilterService:IUserFilterService
     {
         private IConfiguration config;
-        private readonly CommonHelper commonHelper;
+        private readonly DataAccessUser commonHelper;
         private static UserModel user = new UserModel();
-        public UserFilterService(CommonHelper commonHelper, IConfiguration config)
+        public UserFilterService(DataAccessUser commonHelper, IConfiguration config)
         {
             this.commonHelper = commonHelper;
             this.config = config;

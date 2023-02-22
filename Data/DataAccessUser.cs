@@ -2,13 +2,13 @@
 using System.Data.SqlClient;
 using System.Reflection.PortableExecutable;
 
-namespace Registration.Helpers
+namespace WebAPI.Data
 {
-    public class CommonHelper
+    public class DataAccessUser
     {
         private IConfiguration _confg;
 
-        public CommonHelper(IConfiguration confg)
+        public DataAccessUser(IConfiguration confg)
         {
             _confg = confg;
         }
@@ -58,7 +58,7 @@ namespace Registration.Helpers
                 SqlDataReader rd = command.ExecuteReader();
                 if (rd.HasRows)
                 {
-                   
+
                     while (rd.Read())
                     {
                         result.Add(new UserModel
