@@ -12,53 +12,53 @@ namespace Registration.Helpers
         {
             _confg = confg;
         }
-        public int DMLTransaction(string Query)
+        public async Task<bool> UserAlreadyExistsAsync(string Query)
         {
-            int result;
-            string ConnectionString = _confg["ConnectionStrings:UserDefaultDb"];
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            bool flag = false;
+            string configuration = _confg["ConnectionStrings:UserDefaultDb"];
+            using (SqlConnection connection = new SqlConnection(configuration))
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 string sql = Query;
                 SqlCommand command = new SqlCommand(sql, connection);
-                result = command.ExecuteNonQuery();
-                connection.Close();
-            }
-            return result;
-        }
-        public bool UserAlreadyExists(string Query)
-        {
-            bool flag = false;
-            string ConnectionString = _confg["ConnectionStrings:UserDefaultDb"];
-            using(SqlConnection connection=new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-
-                string sql = Query;
-                SqlCommand command = new SqlCommand(sql,connection);
-                SqlDataReader rd=command.ExecuteReader();
-                if(rd.HasRows)
+                SqlDataReader rd = await command.ExecuteReaderAsync();
+                if (rd.HasRows)
                 {
-                    flag= true;
+                    flag = true;
                 }
-                connection.Close();
+                await connection.CloseAsync();
             }
             return flag;
         }
-        public List<UserModel> GetPassword(string Query)
+        public async Task<int> InsertAsync(string Query)
         {
-            List<UserModel> result = new List<UserModel>();
-            string ConnectionString = _confg["ConnectionStrings:UserDefaultDb"];
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            int result;
+            string configuration = _confg["ConnectionStrings:UserDefaultDb"];
+            using (SqlConnection connection = new SqlConnection(configuration))
             {
-                connection.Open();
+                await connection.OpenAsync();
+                string sql = Query;
+                SqlCommand command = new SqlCommand(sql, connection);
+                result = await command.ExecuteNonQueryAsync();
+                await connection.CloseAsync();
+            }
+            return result;
+        }
+        public async Task<List<UserModel>> GetPassword(string Query)
+        {
+            string configuration = _confg["ConnectionStrings:UserDefaultDb"];
+            List<UserModel> result = new List<UserModel>();
+            using (SqlConnection connection = new SqlConnection(configuration))
+            {
+                await connection.OpenAsync();
 
                 string sql = Query;
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader rd = command.ExecuteReader();
                 if (rd.HasRows)
                 {
+                   
                     while (rd.Read())
                     {
                         result.Add(new UserModel
@@ -68,7 +68,7 @@ namespace Registration.Helpers
                         });
                     }
                 }
-                connection.Close();
+                await connection.CloseAsync();
             }
             return result;
         }

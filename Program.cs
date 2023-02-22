@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Registration.Helpers;
 using WebAPI.Data;
 using WebAPI.Services.DeviceService;
+using WebAPI.Services.UserService;
 
 // const string AngularApp = "AngularApp";
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDeviceService, DeviceService>();
+builder.Services.AddSingleton<CommonHelper>();
+builder.Services.AddScoped<IUserFilterService, UserFilterService>();
 builder.Services.AddDbContext<DataContextDevice>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb")));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => { options.TokenValidationParameters 
     = new TokenValidationParameters { ValidateIssuerSigningKey = true, IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Token").Value!)), ValidateIssuer = false, ValidateAudience = false }; });

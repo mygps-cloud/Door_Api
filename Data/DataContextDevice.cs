@@ -13,5 +13,3 @@ public class DataContextDevice : DbContext
     public DbSet<OrderHistory> OrderHistory { get; set; }
     public DbSet<ListenerModel> DoorInformation { get; set; }
 }
-
-    

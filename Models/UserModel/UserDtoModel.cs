@@ -1,9 +1,8 @@
-﻿namespace Register.ViewModels
+﻿namespace WebAPI.Models.UserModel
 {
     public class UserDtoModel
     {
-        public required string Username { get; set; }
-        public required string Password { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }
- 
