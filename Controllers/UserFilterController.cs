@@ -15,11 +15,14 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AccountController : Controller
     {
+        #region UserServiceConfig
         private readonly IUserFilterService userService;
         public AccountController( IUserFilterService userService)
         {
             this.userService = userService;
         }
+        #endregion
+        #region RegisterEndPoint
         [HttpPost("Register")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserDtoModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -31,6 +34,8 @@ namespace WebAPI.Controllers
 
             return Created(nameof(User),"Registartion Successful");
         }
+        #endregion
+        #region LoginEndPoint
         [HttpPost("Login")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDtoModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -41,5 +46,6 @@ namespace WebAPI.Controllers
                 return BadRequest("Username or Password incorrect");
             return Ok(Result);
         }
+        #endregion
     }
 }
