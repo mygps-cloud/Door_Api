@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using WebAPI.Models;
+using WebAPI.Models.DeviceModel;
 using WebAPI.Services.DeviceService;
 
 namespace WebAPI.Controllers

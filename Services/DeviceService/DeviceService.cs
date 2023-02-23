@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebAPI.Data;
-using WebAPI.Models;
+using WebAPI.Models.DeviceModel;
 
 namespace WebAPI.Services.DeviceService;
 

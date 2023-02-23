@@ -1,4 +1,4 @@
-﻿using WebAPI.Models;
+﻿using WebAPI.Models.DeviceModel;
 
 namespace WebAPI.Services.DeviceService;
 
