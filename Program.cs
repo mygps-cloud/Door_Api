@@ -49,4 +49,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();//http://192.168.1.144:5242
+app.Run("http://192.168.1.144:5242");
