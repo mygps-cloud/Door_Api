@@ -26,13 +26,13 @@ namespace WebAPI.Controllers
         }
 
 
-        //[Route("GetOrders")]
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllOrders()
-        //{
-        //    var result = await _DeviceService.GetAllOrders();
-        //    return Ok(result);
-        //}
+        [Route("GetOrders")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            var result = await _DeviceService.GetAllOrders();
+            return Ok(result);
+        }
 
         [Route("GetOrderHistory")]
         [HttpGet]
@@ -61,13 +61,13 @@ namespace WebAPI.Controllers
                 return Ok(result);
         }
 
-        //[Route("AddOrder")]
-        //[HttpPost]
-        //public async Task<IActionResult> AddOrder(OrderModel order)
-        //{
-        //    var result = await _DeviceService.AddOrder(order);
-        //    return Ok(result);
-        //}
+        [Route("AddOrder")]
+        [HttpPost]
+        public async Task<IActionResult> AddOrder(OrderModel order)
+        {
+            var result = await _DeviceService.AddOrder(order);
+            return Ok(result);
+        }
 
         [Route("OrderHistory")]
         [HttpPost]
