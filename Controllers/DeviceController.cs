@@ -19,7 +19,9 @@ namespace WebAPI.Controllers
         }
         [Route("GetDevices")]
         [HttpGet]
-        public async Task<IActionResult> GetAllDevices()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		public async Task<IActionResult> GetAllDevices()
         {
             var result = await _DeviceService.GetAllDevices();
             return Ok(result);
@@ -28,7 +30,9 @@ namespace WebAPI.Controllers
 
         [Route("GetOrders")]
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		public async Task<IActionResult> GetAllOrders()
         {
             var result = await _DeviceService.GetAllOrders();
             return Ok(result);
@@ -36,7 +40,9 @@ namespace WebAPI.Controllers
 
         [Route("GetOrderHistory")]
         [HttpGet]
-        public async Task<IActionResult> GetOrderHistory()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		public async Task<IActionResult> GetOrderHistory()
         {
             var result = await _DeviceService.GetOrderHistory();
             return Ok(result);
@@ -44,45 +50,55 @@ namespace WebAPI.Controllers
 
         [Route("GetListenerInfo")]
         [HttpGet]
-        public async Task<IActionResult> GetListenerInfo()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		public async Task<IActionResult> GetListenerInfo()
         {
             var result = await _DeviceService.GetListenerInfo();
             return Ok(result);
         }
 
-        [Route("AddDevice")]
-        [HttpPost]
-        public async Task<IActionResult> AddDevice(DeviceModel device)
-        {
-            var result = await _DeviceService.AddDevice(device);
-            if (result.Count == 0)
-                return BadRequest("Device already existed");
+  //      [Route("AddDevice")]
+  //      [HttpPost]
+  //      [ProducesResponseType(StatusCodes.Status200OK)]
+  //      [ProducesResponseType(StatusCodes.Status400BadRequest)]
+		//public async Task<IActionResult> AddDevice(DeviceModel device)
+  //      {
+  //          var result = await _DeviceService.AddDevice(device);
+  //          if (result.Count == 0)
+  //              return BadRequest("Device already existed");
 
-                return Ok(result);
-        }
+  //              return Ok(result);
+  //      }
 
         [Route("AddOrder")]
         [HttpPost]
-        public async Task<IActionResult> AddOrder(OrderModel order)
+		[ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public async Task<IActionResult> AddOrder(OrderModel order)
         {
             var result = await _DeviceService.AddOrder(order);
+            if (result == null)
+	            return BadRequest(400);
             return Ok(result);
         }
 
         [Route("OrderHistory")]
         [HttpPost]
-        public async Task<IActionResult> AddOrderHistory(OrderHistory order)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public async Task<IActionResult> AddOrderHistory(OrderHistory order)
         {
             var result = await _DeviceService.AddOrderHistory(order);
             return Ok(result);
         }
 
-        [Route("AddListenerModel")]
-        [HttpPost]
-        public async Task<IActionResult> AddListenerModel(ListenerModel order)
-        {
-            var result = await _DeviceService.AddListenerModel(order);
-            return Ok(result);
-        }
+        //[Route("AddListenerModel")]
+        //[HttpPost]
+        //public async Task<IActionResult> AddListenerModel(ListenerModel order)
+        //{
+        //    var result = await _DeviceService.AddListenerModel(order);
+        //    return Ok(result);
+        //}
     }
 }

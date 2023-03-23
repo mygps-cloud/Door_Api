@@ -37,26 +37,29 @@ public class DeviceService : IDeviceService
         return orders;
     }
 
-    public async Task<List<DeviceModel>> AddDevice(DeviceModel device)
-    {
-        var a = _context.DoorInformationUPDATED.FirstOrDefault(x => x.IMEI == device.IMEI);
-        if (a != null)
-        {
-            return new List<DeviceModel>();
-        }
-        //device.DeviceId =DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        _context.DoorInformationUPDATED.Add(device);
-        await _context.SaveChangesAsync();
-        return await _context.DoorInformationUPDATED.ToListAsync();
-
-    } 
+    //public async Task<List<DeviceModel>> AddDevice(DeviceModel device)
+    //{
+    //    var a = _context.DoorInformationUPDATED.FirstOrDefault(x => x.IMEI == device.IMEI);
+    //    if (a != null)
+    //    {
+    //        return new List<DeviceModel>();
+    //    }
+    //    //device.DeviceId =DateTimeOffset.Now.ToUnixTimeMilliseconds();
+    //    _context.DoorInformationUPDATED.Add(device);
+    //    await _context.SaveChangesAsync();
+    //    return await _context.DoorInformationUPDATED.ToListAsync();
+    //} 
     public async Task<List<OrderModel>> AddOrder(OrderModel order)
     {
+	    if (order == null || order.OrderType == null || order.OrderId == null /* add more properties as needed */)
+	    {
+		    return null;
+	    }
 
 		_context.Orders.Add(order);
 		await _context.SaveChangesAsync();
 		var postedData = await _context.Orders
-			.Where(o => o.CreatedDate == order.CreatedDate)
+			.Where(o => o.OrderId == order.OrderId)
 			.ToListAsync();
 		return postedData;
 	}
@@ -66,7 +69,7 @@ public class DeviceService : IDeviceService
 		_context.OrderHistory.Add(order);
 		await _context.SaveChangesAsync();
 		var postedData = await _context.OrderHistory
-			.Where(o => o.CreatedDate == order.CreatedDate)
+			.Where(o => o.DeviceId == order.DeviceId)
 			.ToListAsync();
 		return postedData;
 	}
