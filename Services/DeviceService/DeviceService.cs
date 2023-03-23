@@ -48,28 +48,35 @@ public class DeviceService : IDeviceService
         _context.DoorInformationUPDATED.Add(device);
         await _context.SaveChangesAsync();
         return await _context.DoorInformationUPDATED.ToListAsync();
+
     } 
     public async Task<List<OrderModel>> AddOrder(OrderModel order)
     {
 
-        _context.Orders.Add(order);
-        await _context.SaveChangesAsync();
-        return await _context.Orders.ToListAsync();
-    }
+		_context.Orders.Add(order);
+		await _context.SaveChangesAsync();
+		var postedData = await _context.Orders
+			.Where(o => o.CreatedDate == order.CreatedDate)
+			.ToListAsync();
+		return postedData;
+	}
 
     public async Task<List<OrderHistory>> AddOrderHistory(OrderHistory order)
-    {
-        _context.OrderHistory.Add(order);
-        await _context.SaveChangesAsync();
-        return await _context.OrderHistory.ToListAsync();
-    }
+	{
+		_context.OrderHistory.Add(order);
+		await _context.SaveChangesAsync();
+		var postedData = await _context.OrderHistory
+			.Where(o => o.CreatedDate == order.CreatedDate)
+			.ToListAsync();
+		return postedData;
+	}
 
-    public async Task<List<ListenerModel>> AddListenerModel(ListenerModel order)
-    {
-        _context.DoorInformation.Add(order);
-        await _context.SaveChangesAsync();
-        return await _context.DoorInformation.ToListAsync();
-    }
+    //public async Task<List<ListenerModel>> AddListenerModel(ListenerModel order)
+    //{
+    //    _context.DoorInformation.Add(order);
+    //    await _context.SaveChangesAsync();
+    //    return await _context.DoorInformation.ToListAsync();
+    //}
 }
 
 
