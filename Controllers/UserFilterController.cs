@@ -15,8 +15,9 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AccountController : Controller
     {
-        #region UserServiceConfig
-        private readonly IUserFilterService userService;
+	    int[] RequestCodes = { 400, 409, 500, 201 };
+		#region UserServiceConfig
+		private readonly IUserFilterService userService;
         public AccountController( IUserFilterService userService)
         {
             this.userService = userService;
@@ -30,7 +31,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		public async Task<IActionResult> Register([FromBody]UserDtoModel User)
 		{
-			int[] RequestCodes = { 400, 409, 500, 201 };
+			
 			var Results = await userService.RegisterClient(User); 
             if (Results == RequestCodes[1])
                 return Conflict("User Already Existed");
@@ -50,9 +51,13 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login([FromBody]UserDtoModel User)
         {
-            var Result=await userService.LoginClient(User);
-            if (string.IsNullOrEmpty(Result))
+	        var Result = await userService.LoginClient(User);
+
+			if (Result== RequestCodes[0].ToString())
+				return BadRequest("Incorect Parameter Value");
+			if (string.IsNullOrEmpty(Result))
                 return BadRequest("Username or Password incorrect");
+
             return Ok(Result);
         }
         #endregion

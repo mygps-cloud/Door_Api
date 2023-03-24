@@ -17,15 +17,16 @@ namespace WebAPI.Services.DeviceService
 	    private IConfiguration config;
         private readonly DataAccessUser commonHelper;
         private static UserModel user = new UserModel();
-        public UserFilterService(DataAccessUser commonHelper, IConfiguration config)
+        int[] RequestCodes = { 400, 409, 500, 201 };
+		public UserFilterService(DataAccessUser commonHelper, IConfiguration config)
         {
             this.commonHelper = commonHelper;
             this.config = config;
         }
+
         public async Task<int> RegisterClient(UserDtoModel User)
         {
-	        int[] RequestCodes = {400, 409,500,201};
-			if (string.IsNullOrEmpty(User.Password) || string.IsNullOrEmpty(User.Username))
+	        if (string.IsNullOrEmpty(User.Password) || string.IsNullOrEmpty(User.Username))
 	        {
 		        return RequestCodes[0];
 	        }
@@ -44,9 +45,14 @@ namespace WebAPI.Services.DeviceService
 
             return RequestCodes[3];
         }
+
         public async Task<string> LoginClient(UserDtoModel User)
         {
-            string UserExistQuery = $"SELECT * FROM [UserTable] WHERE Username='{User.Username}'";
+			if (string.IsNullOrEmpty(User.Password) || string.IsNullOrEmpty(User.Username))
+			{
+				return RequestCodes[0].ToString();
+			}//Cintinue more Request Logic
+			string UserExistQuery = $"SELECT * FROM [UserTable] WHERE Username='{User.Username}'";
             var Result = await commonHelper.GetPassword(UserExistQuery);
 
             user.PasswordHash = Result[0].PasswordHash;
