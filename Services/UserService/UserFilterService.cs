@@ -23,6 +23,10 @@ namespace WebAPI.Services.DeviceService
         }
         public async Task<bool> RegisterClient(UserDtoModel User)
         {
+	        if (string.IsNullOrEmpty(User.Password) || string.IsNullOrEmpty(User.Username))
+	        {
+		        return false;
+	        }
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(User.Password);
             user.Username = User.Username;
             user.PasswordHash = passwordHash;
