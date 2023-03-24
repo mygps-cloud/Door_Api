@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
             if(Results == RequestCodes[0])
                return BadRequest("Inccorect Parameter");
 
-            if(Results== RequestCodes[500])
+            if(Results== RequestCodes[2])
 				return StatusCode(StatusCodes.Status500InternalServerError);
 
 			return Created(nameof(User),"Registartion Successful");
