@@ -26,13 +26,22 @@ namespace WebAPI.Controllers
         [HttpPost("Register")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserDtoModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Register([FromBody]UserDtoModel User)
-        {
-            var Results = await userService.RegisterClient(User); 
-            if (Results == false)
-                return BadRequest("User Already Existed");
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<IActionResult> Register([FromBody]UserDtoModel User)
+		{
+			int[] RequestCodes = { 400, 409, 500, 201 };
+			var Results = await userService.RegisterClient(User); 
+            if (Results == RequestCodes[1])
+                return Conflict("User Already Existed");
 
-            return Created(nameof(User),"Registartion Successful");
+            if(Results == RequestCodes[0])
+               return BadRequest("Inccorect Parameter");
+
+            if(Results== RequestCodes[500])
+				return StatusCode(StatusCodes.Status500InternalServerError);
+
+			return Created(nameof(User),"Registartion Successful");
         }
         #endregion
         #region LoginEndPoint

@@ -13,7 +13,8 @@ namespace WebAPI.Services.DeviceService
 {
     public class UserFilterService:IUserFilterService
     {
-        private IConfiguration config;
+
+	    private IConfiguration config;
         private readonly DataAccessUser commonHelper;
         private static UserModel user = new UserModel();
         public UserFilterService(DataAccessUser commonHelper, IConfiguration config)
@@ -21,11 +22,12 @@ namespace WebAPI.Services.DeviceService
             this.commonHelper = commonHelper;
             this.config = config;
         }
-        public async Task<bool> RegisterClient(UserDtoModel User)
+        public async Task<int> RegisterClient(UserDtoModel User)
         {
-	        if (string.IsNullOrEmpty(User.Password) || string.IsNullOrEmpty(User.Username))
+	        int[] RequestCodes = {400, 409,500,201};
+			if (string.IsNullOrEmpty(User.Password) || string.IsNullOrEmpty(User.Username))
 	        {
-		        return false;
+		        return RequestCodes[0];
 	        }
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(User.Password);
             user.Username = User.Username;
@@ -33,14 +35,14 @@ namespace WebAPI.Services.DeviceService
             string UserExistQuery = $"SELECT * FROM [UserTable] WHERE Username='{user.Username}'";
             bool userExists = await commonHelper.UserAlreadyExistsAsync(UserExistQuery);
             if (userExists == true)
-                return false;
+                return RequestCodes[1];
             string Query = $"INSERT INTO [UserTable] (Username, Password) VALUES ('{user.Username}','{user.PasswordHash}')";
 
             int result =await commonHelper.InsertAsync(Query);
             if(result<0)
-                return false;
+                return RequestCodes[2];
 
-            return true;
+            return RequestCodes[3];
         }
         public async Task<string> LoginClient(UserDtoModel User)
         {
