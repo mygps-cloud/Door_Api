@@ -51,7 +51,8 @@ namespace WebAPI.Services.DeviceService
 			if (string.IsNullOrEmpty(User.Password) || string.IsNullOrEmpty(User.Username))
 			{
 				return RequestCodes[0].ToString();
-			}//Cintinue more Request Logic
+			}
+            
 			string UserExistQuery = $"SELECT * FROM [UserTable] WHERE Username='{User.Username}'";
             var Result = await commonHelper.GetPassword(UserExistQuery);
 
