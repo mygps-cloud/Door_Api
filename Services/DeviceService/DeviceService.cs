@@ -16,25 +16,37 @@ public class DeviceService : IDeviceService
     public async Task<List<OrderModel>> GetAllOrders()
     {
         var orders = await _context.Orders.ToListAsync();
+        if (orders == null || orders.Count == 0)
+	        throw new ArgumentException("There is no data");
         return orders;
     }
 
     public async Task<List<DeviceModel>> GetAllDevices()
     {
         var orders = await _context.DoorInformationUPDATED.ToListAsync();
-        return orders;
+
+        if (orders == null || orders.Count == 0)
+	        throw new ArgumentException("There is no data");
+
+		return orders;
     }
 
     public async Task<List<OrderHistory>> GetOrderHistory()
     {
         var orders = await _context.OrderHistory.ToListAsync();
-        return orders;
+        if (orders == null || orders.Count == 0)
+	        throw new ArgumentException("There is no data");
+
+		return orders;
     }
 
     public async Task<List<ListenerModel>> GetListenerInfo()
     {
         var orders = await _context.DoorInformation.ToListAsync();
-        return orders;
+        if (orders == null || orders.Count == 0)
+	        throw new ArgumentException("There is no data");
+
+		return orders;
     }
 
     //public async Task<List<DeviceModel>> AddDevice(DeviceModel device)
@@ -49,26 +61,30 @@ public class DeviceService : IDeviceService
     //    await _context.SaveChangesAsync();
     //    return await _context.DoorInformationUPDATED.ToListAsync();
     //} 
-    public async Task<List<OrderModel>> AddOrder(OrderModel order)
-    {
-	    if (order == null || order.OrderType == null || order.OrderId == null /* add more properties as needed */)
-	    {
-		    return null;
-	    }
+ //   public async Task<List<OrderModel>> AddOrder(OrderModel order)
+ //   {
+	//    if (order == null || order.OrderType == null || order.OrderId == null /* add more properties as needed */)
+	//    {
+	//		throw new ArgumentException("There is no data");
+	//	}
 
-		_context.Orders.Add(order);
-		await _context.SaveChangesAsync();
-		var postedData = await _context.Orders
-			.Where(o => o.OrderId == order.OrderId)
-			.ToListAsync();
-		return postedData;
-	}
+	//	_context.Orders.Add(order);
+	//	await _context.SaveChangesAsync();
+	//	var postedData = await _context.Orders
+	//		.Where(o => o.OrderId == order.OrderId)
+	//		.ToListAsync();
+	//	return postedData;
+	//}
 
 	public async Task<List<string>> AddOrderHistory(OrderHistory order)
 	{
 		List<string> postedData = new List<string>();
+
 		_context.OrderHistory.Add(order);
-		await _context.SaveChangesAsync();
+		if (await _context.SaveChangesAsync() == 0)
+		{
+			throw new DbUpdateException("Failed to remember. Try again");
+		}
 
 		while (true)
 		{
@@ -83,15 +99,11 @@ public class DeviceService : IDeviceService
 
 			if (hasNonEmptyOrderResult)
 			{
-				// break out of the loop if at least one order result is non-empty
 				break;
 			}
 
-			// sleep for some time before checking again
-			await Task.Delay(TimeSpan.FromSeconds(1));
 		}
 
-		// return the list of non-empty order results
 		return postedData.Where(o => !string.IsNullOrEmpty(o)).ToList();
 	}
 

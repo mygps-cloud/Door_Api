@@ -4,7 +4,7 @@ namespace WebAPI.Services.DeviceService;
 
 public interface IDeviceService
 {
-	Task<List<OrderModel>> AddOrder(OrderModel order);                  //ამატებს ორდერს თეიბლში (შესაქმნელი)
+	//Task<List<OrderModel>> AddOrder(OrderModel order);                  //ამატებს ორდერს თეიბლში (შესაქმნელი)
 	Task<List<string>> AddOrderHistory(OrderHistory order);       //ხდება OrderHistory თებლში ორდერის დამატება (რას ნიშნავს ორდერი?)
 	Task<List<DeviceModel>> GetAllDevices();                            //მოაქ ყველა მონაცემი განახლებადი თეიბლიდან
     Task<List<OrderModel>> GetAllOrders();                              //შესაქმნელია

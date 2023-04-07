@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using WebAPI.Models.DeviceModel;
 using WebAPI.Services.DeviceService;
@@ -20,66 +21,108 @@ namespace WebAPI.Controllers
         [Route("GetDevices")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		public async Task<IActionResult> GetAllDevices()
         {
-            var result = await _DeviceService.GetAllDevices();
-            return Ok(result);
+	        try
+	        {
+		        var result = await _DeviceService.GetAllDevices();
+		        return Ok(result);
+			}
+	        catch (ArgumentException e)
+	        {
+		        return NotFound(e.Message);
+	        }
+          
         }
 
 
         [Route("GetOrders")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		public async Task<IActionResult> GetAllOrders()
         {
-            var result = await _DeviceService.GetAllOrders();
-            return Ok(result);
-        }
+			try
+			{
+				var result = await _DeviceService.GetAllDevices();
+				return Ok(result);
+			}
+			catch (ArgumentException e)
+			{
+				return NotFound(e.Message);
+			}
+		}
 
         [Route("GetOrderHistory")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		public async Task<IActionResult> GetOrderHistory()
         {
-            var result = await _DeviceService.GetOrderHistory();
-            return Ok(result);
-        }
+			try
+			{
+				var result = await _DeviceService.GetAllDevices();
+				return Ok(result);
+			}
+			catch (ArgumentException e)
+			{
+				return NotFound(e.Message);
+			}
+		}
 
         [Route("GetListenerInfo")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		public async Task<IActionResult> GetListenerInfo()
         {
-            var result = await _DeviceService.GetListenerInfo();
-            return Ok(result);
-        }
+			try
+			{
+				var result = await _DeviceService.GetAllDevices();
+				return Ok(result);
+			}
+			catch (ArgumentException e)
+			{
+				return NotFound(e.Message);
+			}
+		}
 
 
 
-        [Route("AddOrder")]
-        [HttpPost]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<IActionResult> AddOrder(OrderModel order)
-        {
-            var result = await _DeviceService.AddOrder(order);
-            if (result == null)
-	            return BadRequest(400);
-            return Ok(result);
-        }
+  //      [Route("AddOrder")]
+  //      [HttpPost]
+		//[ProducesResponseType(StatusCodes.Status200OK)]
+  //      [ProducesResponseType(StatusCodes.Status400BadRequest)]
+		//public async Task<IActionResult> AddOrder(OrderModel order)
+  //      {
+  //          var result = await _DeviceService.AddOrder(order);
+  //          if (result == null)
+	 //           return BadRequest(400);
+  //          return Ok(result);
+  //      }
 
         [Route("OrderHistory")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
 		public async Task<IActionResult> AddOrderHistory(OrderHistory order)
         {
-            var result = await _DeviceService.AddOrderHistory(order);
-            return Ok(result);
+	        try
+	        {
+		        var result = await _DeviceService.AddOrderHistory(order);
+		        return Ok(result);
+			}
+	        catch (DbUpdateException e)
+	        {
+		        return StatusCode(500, e.Message);
+	        }
         }
 
 		//[Route("AddListenerModel")]
