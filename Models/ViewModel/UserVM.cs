@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebAPI.Models.UserModel
+namespace WebAPI.Models.ViewModel
 {
-    public class UserDtoModel
+    public class UserVM
     {
-	    [Required]
+        [Required]
         public string Username { get; set; } = string.Empty;
         [Required]
         public string Password { get; set; } = string.Empty;

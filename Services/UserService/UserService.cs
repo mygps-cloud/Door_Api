@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Register.ViewModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WebAPI.Data;
 using WebAPI.Models.UserModel;
+using WebAPI.Models.ViewModel;
 using WebAPI.Services.UserService;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
@@ -23,7 +23,7 @@ namespace WebAPI.Services.DeviceService
 			_config = config;
 		}
 
-		public async Task<bool> RegisterClient(UserDtoModel user)
+		public async Task<bool> RegisterClient(UserVM user)
        {
 	        UserModel userTdoModel = new UserModel();
 			if (string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.Username))
@@ -49,7 +49,7 @@ namespace WebAPI.Services.DeviceService
 			return true;
        }
 
-        public async Task<string> LoginClient(UserDtoModel user)
+        public async Task<string> LoginClient(UserVM user)
         {
 			if (string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.Username))
 			{
@@ -71,7 +71,7 @@ namespace WebAPI.Services.DeviceService
         }
 
 
-        private string CreateToken(UserDtoModel user)
+        private string CreateToken(UserVM user)
         {
             List<Claim> claims = new List<Claim>
             {

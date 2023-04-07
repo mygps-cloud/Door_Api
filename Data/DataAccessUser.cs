@@ -1,6 +1,6 @@
-﻿using Register.ViewModels;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Reflection.PortableExecutable;
+using WebAPI.Models.UserModel;
 
 namespace WebAPI.Data
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Register.ViewModels;
 using WebAPI.Models.DeviceModel;
+using WebAPI.Models.UserModel;
 
 namespace WebAPI.Data;
 

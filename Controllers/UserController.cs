@@ -3,11 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto.Generators;
-using Register.ViewModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WebAPI.Models.UserModel;
+using WebAPI.Models.ViewModel;
 using WebAPI.Services.UserService;
 
 namespace WebAPI.Controllers
@@ -25,11 +24,11 @@ namespace WebAPI.Controllers
         #endregion
         #region RegisterEndPoint
         [HttpPost("Register")]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserDtoModel))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserVM))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<IActionResult> Register([FromBody]UserDtoModel User)
+		public async Task<IActionResult> Register([FromBody]UserVM User)
 		{
 			try
 			{
@@ -52,12 +51,10 @@ namespace WebAPI.Controllers
         #endregion
         #region LoginEndPoint
         [HttpPost("Login")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDtoModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserVM))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login([FromBody]UserDtoModel User)
+        public async Task<IActionResult> Login([FromBody]UserVM User)
         {
-	       
-
 	        try
 	        {
 		        var Result = await userService.LoginClient(User);
