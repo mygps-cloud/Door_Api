@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
 using System.Text;
 using WebAPI.Data;
@@ -59,16 +60,16 @@ namespace WebAPI.Services.DeviceService
 			string passwordHash =await _context.User
 				.Where(u => u.Username == user.Username).Select(u => u.PasswordHash).FirstOrDefaultAsync();
 
+			bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(user.Password, passwordHash);
 
-			if (!BCrypt.Net.BCrypt.Verify(user.Password, passwordHash))
-			{
-				throw new ArgumentException("Invalid password");
-			}
+			if (isPasswordCorrect == false)
+				throw new ArgumentException("Incorrect Password");
 
-			string token = CreateToken(user);
+	        string token = CreateToken(user);
 
-            return token;
-        }
+			return token;
+
+		}
 
 
         private string CreateToken(UserVM user)

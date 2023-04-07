@@ -71,7 +71,7 @@ namespace WebAPI.Controllers
 	        }
 	        catch (ArgumentException e)
 	        {
-		        return Conflict(e.Message);
+		        return BadRequest(e.Message);
 	        }
 		}
 
