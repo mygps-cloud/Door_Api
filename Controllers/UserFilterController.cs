@@ -58,8 +58,12 @@ namespace WebAPI.Controllers
 			if (string.IsNullOrEmpty(Result))
                 return BadRequest("Username or Password incorrect");
 
-            return Ok(Result);
-        }
+			return Ok(new
+			{
+				Result,
+				durationTime = DateTime.Now.AddDays(10)
+			});
+		}
         #endregion
     }
 }

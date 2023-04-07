@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using WebAPI.Data;
 using WebAPI.Services.DeviceService;
 using WebAPI.Services.UserService;
@@ -18,9 +19,26 @@ builder.Services.AddScoped<IDeviceService, DeviceService>();
 builder.Services.AddSingleton<DataAccessUser>();
 builder.Services.AddScoped<IUserFilterService, UserFilterService>();
 builder.Services.AddDbContext<DataContextDevice>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb")));
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => { options.TokenValidationParameters 
-    = new TokenValidationParameters { ValidateIssuerSigningKey = true, IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Token").Value!)), ValidateIssuer = false, ValidateAudience = false }; });
 
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+
+}).AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuerSigningKey = true,
+		IssuerSigningKey =
+			new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Token").Value!)),
+		ValidateLifetime = true,
+		ValidateAudience = false,
+		ValidateIssuer = false,
+		ClockSkew = TimeSpan.Zero
+	};
+});
 
 // builder.Services.AddCors(options => options.AddPolicy(AngularApp,
 //     policy =>
@@ -49,4 +67,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run("http://192.168.1.144:5242");
+app.Run("http://localhost:5242");

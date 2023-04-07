@@ -30,6 +30,7 @@ namespace WebAPI.Services.DeviceService
 	        {
 		        return RequestCodes[0];
 	        }
+
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(User.Password);
             user.Username = User.Username;
             user.PasswordHash = passwordHash;
@@ -74,14 +75,15 @@ namespace WebAPI.Services.DeviceService
                 new Claim(ClaimTypes.Name,user.Username)
             };
 
-            var Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("Jwt:Token").Value!));
-
-            var creds = new SigningCredentials(Key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(claims: claims, expires: DateTime.Now.AddMilliseconds(200), signingCredentials: creds);
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
+            //var Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("Jwt:Token").Value!));
+            var key = Encoding.UTF8.GetBytes(config.GetSection("Jwt:Token").Value!);
+			var jwt = new JwtSecurityToken(
+				claims: claims,
+				notBefore: DateTime.UtcNow,
+				expires: DateTime.Now.AddMinutes(10),
+				signingCredentials: new SigningCredentials(
+					new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature));
+			return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
     }
 }
