@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto.Generators;
@@ -15,10 +16,9 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AccountController : Controller
     {
-	    int[] RequestCodes = { 400, 409, 500, 201 };
-		#region UserServiceConfig
-		private readonly IUserFilterService userService;
-        public AccountController( IUserFilterService userService)
+	    #region UserServiceConfig
+		private readonly IUserService userService;
+        public AccountController( IUserService userService)
         {
             this.userService = userService;
         }
@@ -31,19 +31,24 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		public async Task<IActionResult> Register([FromBody]UserDtoModel User)
 		{
-			
-			var Results = await userService.RegisterClient(User); 
-            if (Results == RequestCodes[1])
-                return Conflict("User Already Existed");
-
-            if(Results == RequestCodes[0])
-               return BadRequest("Inccorect Parameter");
-
-            if(Results== RequestCodes[2])
-				return StatusCode(StatusCodes.Status500InternalServerError);
-
-			return Created(nameof(User),"Registartion Successful");
-        }
+			try
+			{
+				await userService.RegisterClient(User);
+				return Created(nameof(User)," User Created Successful");
+			}
+			catch (ArgumentNullException e)
+			{
+				return BadRequest(e.Message);
+			}
+			catch (ArgumentException e)
+			{
+				return Conflict(e.Message);
+			}
+			catch (DbUpdateException e)
+			{
+				return StatusCode(500,e.Message);
+			}
+		}
         #endregion
         #region LoginEndPoint
         [HttpPost("Login")]
@@ -51,19 +56,29 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login([FromBody]UserDtoModel User)
         {
-	        var Result = await userService.LoginClient(User);
+	       
 
-			if (Result== RequestCodes[0].ToString())
-				return BadRequest("Incorect Parameter Value");
-			if (string.IsNullOrEmpty(Result))
-                return BadRequest("Username or Password incorrect");
+	        try
+	        {
+		        var Result = await userService.LoginClient(User);
+		        return Ok(new
+		        {
+			        Result,
+			        durationTime = DateTime.Now.AddDays(10)
+		        });
+			}
 
-			return Ok(new
-			{
-				Result,
-				durationTime = DateTime.Now.AddDays(10)
-			});
+	        catch (ArgumentNullException e)
+	        {
+		        return BadRequest(e.Message);
+	        }
+	        catch (ArgumentException e)
+	        {
+		        return Conflict(e.Message);
+	        }
 		}
+
+			
+	}
         #endregion
-    }
 }

@@ -17,8 +17,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDeviceService, DeviceService>();
 builder.Services.AddSingleton<DataAccessUser>();
-builder.Services.AddScoped<IUserFilterService, UserFilterService>();
-builder.Services.AddDbContext<DataContextDevice>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb")));
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb")));
 
 builder.Services.AddAuthentication(options =>
 {
