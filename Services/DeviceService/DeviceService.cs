@@ -64,22 +64,44 @@ public class DeviceService : IDeviceService
 		return postedData;
 	}
 
-    public async Task<List<OrderHistory>> AddOrderHistory(OrderHistory order)
+	public async Task<List<string>> AddOrderHistory(OrderHistory order)
 	{
+		List<string> postedData = new List<string>();
 		_context.OrderHistory.Add(order);
 		await _context.SaveChangesAsync();
-		var postedData = await _context.OrderHistory
-			.Where(o => o.DeviceId == order.DeviceId)
-			.ToListAsync();
-		return postedData;
+
+		while (true)
+		{
+			// retrieve order results from the database where DeviceId matches
+			postedData = await _context.OrderHistory
+				.Where(o => o.DeviceId == order.DeviceId)
+				.Select(o => o.OrderResult)
+				.ToListAsync();
+
+			// check if any of the order results are non-empty
+			bool hasNonEmptyOrderResult = postedData.Any(o => !string.IsNullOrEmpty(o));
+
+			if (hasNonEmptyOrderResult)
+			{
+				// break out of the loop if at least one order result is non-empty
+				break;
+			}
+
+			// sleep for some time before checking again
+			await Task.Delay(TimeSpan.FromSeconds(1));
+		}
+
+		// return the list of non-empty order results
+		return postedData.Where(o => !string.IsNullOrEmpty(o)).ToList();
 	}
 
-    //public async Task<List<ListenerModel>> AddListenerModel(ListenerModel order)
-    //{
-    //    _context.DoorInformation.Add(order);
-    //    await _context.SaveChangesAsync();
-    //    return await _context.DoorInformation.ToListAsync();
-    //}
+
+	//public async Task<List<ListenerModel>> AddListenerModel(ListenerModel order)
+	//{
+	//    _context.DoorInformation.Add(order);
+	//    await _context.SaveChangesAsync();
+	//    return await _context.DoorInformation.ToListAsync();
+	//}
 }
 
 
