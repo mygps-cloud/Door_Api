@@ -111,18 +111,23 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status408RequestTimeout)]
 
-		public async Task<IActionResult> AddOrderHistory(OrderHistory order)
+        public async Task<IActionResult> AddOrderHistory(OrderHistory order)
         {
-	        try
-	        {
-		        var result = await _DeviceService.AddOrderHistory(order);
-		        return Ok(result);
-			}
-	        catch (DbUpdateException e)
-	        {
-		        return StatusCode(500, e.Message);
-	        }
+            try
+            {
+                var result = await _DeviceService.AddOrderHistory(order);
+                return Ok(result);
+            }
+            catch (DbUpdateException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+            catch (TimeoutException e)
+            {
+                return StatusCode(408, e.Message);
+            }
         }
 
 		//[Route("AddListenerModel")]

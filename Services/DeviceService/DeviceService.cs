@@ -7,6 +7,7 @@ namespace WebAPI.Services.DeviceService;
 public class DeviceService : IDeviceService
 {
     private readonly AppDbContext _context;
+	private static System.Timers.Timer _timer;
 
     public DeviceService(AppDbContext context)
     {
@@ -77,8 +78,12 @@ public class DeviceService : IDeviceService
 	//}
 
 	public async Task<List<string>> AddOrderHistory(OrderHistory order)
-	{
-		List<string> postedData = new List<string>();
+    {
+        using var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+        var timeout = TimeSpan.FromSeconds(5);
+
+        List<string> postedData = new List<string>();
 
 		_context.OrderHistory.Add(order);
 		if (await _context.SaveChangesAsync() == 0)
@@ -102,7 +107,16 @@ public class DeviceService : IDeviceService
 				break;
 			}
 
-		}
+            var delayTask = Task.Delay(timeout, cancellationToken);
+            var completedTask = await Task.WhenAny(delayTask, Task.Delay(-1, cancellationToken));
+
+            if (completedTask == delayTask)
+            {
+                cancellationTokenSource.Cancel();
+                throw new TimeoutException("The command failed. Please try again");
+            }
+
+        }
 
 		return postedData.Where(o => !string.IsNullOrEmpty(o)).ToList();
 	}
