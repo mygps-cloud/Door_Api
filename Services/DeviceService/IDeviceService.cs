@@ -10,7 +10,9 @@ public interface IDeviceService
     Task<List<OrderModel>> GetAllOrders();                              //შესაქმნელია
     Task<List<OrderHistory>> GetOrderHistory();                         //მოაქ ბრძანებათა ისტორია (გასარკვევია)
     Task<List<ListenerModel>> GetListenerInfo();                        //ყველა მიღებული მონაცემის წამოღება
+
+    Task<string> GetStatus(long imei);
     //Task<List<DeviceModel>> AddDevice(DeviceModel device);              //ამატებს  ახალ დევაისს ბაზაში სადაც ხდება განახლება და თავზე გადაწერა შემოსული ინფორმაციის
-    
+
     //Task<List<ListenerModel>> AddListenerModel(ListenerModel order);    //წერს იმ თეიბლში სადაც ყველა მონაცემია (?)
 }

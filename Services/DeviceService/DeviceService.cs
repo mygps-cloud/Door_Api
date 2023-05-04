@@ -50,6 +50,27 @@ public class DeviceService : IDeviceService
 		return orders;
     }
 
+    public async Task<string> GetStatus(long imei)
+    {
+        string status = "example";
+
+        var DoorStatus = await _context.DoorInformationUPDATED
+            .Where(i => i.IMEI == imei)
+            .Select(n => new { n.DOOR_CLOSE, n.DOOR_OPEN, n.LEFT_DOOR, n.RIGHT_DOOR,n.DOOR_STATUS })
+            .ToListAsync();
+
+
+        if (DoorStatus[0].DOOR_STATUS == 1 && DoorStatus[0].DOOR_CLOSE == 1 && DoorStatus[0].DOOR_OPEN == 1)
+            return "1";
+        if (DoorStatus[0].DOOR_STATUS == 2)
+            return "2";
+        if (DoorStatus[0].DOOR_CLOSE == 2)
+            return "3";
+        if (DoorStatus[0].DOOR_OPEN == 2)
+            return "4";
+        return "Please Try Again";
+    }
+
     //public async Task<List<DeviceModel>> AddDevice(DeviceModel device)
     //{
     //    var a = _context.DoorInformationUPDATED.FirstOrDefault(x => x.IMEI == device.IMEI);
@@ -62,26 +83,26 @@ public class DeviceService : IDeviceService
     //    await _context.SaveChangesAsync();
     //    return await _context.DoorInformationUPDATED.ToListAsync();
     //} 
- //   public async Task<List<OrderModel>> AddOrder(OrderModel order)
- //   {
-	//    if (order == null || order.OrderType == null || order.OrderId == null /* add more properties as needed */)
-	//    {
-	//		throw new ArgumentException("There is no data");
-	//	}
+    //   public async Task<List<OrderModel>> AddOrder(OrderModel order)
+    //   {
+    //    if (order == null || order.OrderType == null || order.OrderId == null /* add more properties as needed */)
+    //    {
+    //		throw new ArgumentException("There is no data");
+    //	}
 
-	//	_context.Orders.Add(order);
-	//	await _context.SaveChangesAsync();
-	//	var postedData = await _context.Orders
-	//		.Where(o => o.OrderId == order.OrderId)
-	//		.ToListAsync();
-	//	return postedData;
-	//}
+    //	_context.Orders.Add(order);
+    //	await _context.SaveChangesAsync();
+    //	var postedData = await _context.Orders
+    //		.Where(o => o.OrderId == order.OrderId)
+    //		.ToListAsync();
+    //	return postedData;
+    //}
 
-	public async Task<List<string>> AddOrderHistory(OrderHistory order)
+    public async Task<List<string>> AddOrderHistory(OrderHistory order)
     {
         using var cancellationTokenSource = new CancellationTokenSource();
         var cancellationToken = cancellationTokenSource.Token;
-        var timeout = TimeSpan.FromSeconds(5);
+        var timeout = TimeSpan.FromSeconds(10);
 
         List<string> postedData = new List<string>();
 
@@ -107,14 +128,11 @@ public class DeviceService : IDeviceService
 				break;
 			}
 
-            var delayTask = Task.Delay(timeout, cancellationToken);
-            var completedTask = await Task.WhenAny(delayTask, Task.Delay(-1, cancellationToken));
-
-            if (completedTask == delayTask)
-            {
-                cancellationTokenSource.Cancel();
-                throw new TimeoutException("The command failed. Please try again");
-            }
+            //if (completedTask == delayTask)
+            //{
+            //    cancellationTokenSource.Cancel();
+            //    throw new TimeoutException("The command failed. Please try again");
+            //}
 
         }
 
