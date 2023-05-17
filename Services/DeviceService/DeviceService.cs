@@ -98,46 +98,52 @@ public class DeviceService : IDeviceService
     //	return postedData;
     //}
 
-    public async Task<List<string>> AddOrderHistory(OrderHistory order)
+    public async Task<List<string?>> AddOrderHistory(OrderHistory order)
     {
         using var cancellationTokenSource = new CancellationTokenSource();
         var cancellationToken = cancellationTokenSource.Token;
-        var timeout = TimeSpan.FromSeconds(10);
+        var timeout = TimeSpan.FromSeconds(5);
 
-        List<string> postedData = new List<string>();
+        List<string?> postedData = new List<string?>();
 
-		_context.OrderHistory.Add(order);
-		if (await _context.SaveChangesAsync() == 0)
-		{
-			throw new DbUpdateException("Failed to remember. Try again");
-		}
-
-		while (true)
-		{
-			// retrieve order results from the database where DeviceId matches
-			postedData = await _context.OrderHistory
-				.Where(o => o.DeviceId == order.DeviceId)
-				.Select(o => o.OrderResult)
-				.ToListAsync();
-
-			// check if any of the order results are non-empty
-			bool hasNonEmptyOrderResult = postedData.Any(o => !string.IsNullOrEmpty(o));
-
-			if (hasNonEmptyOrderResult)
-			{
-				break;
-			}
-
-            //if (completedTask == delayTask)
-            //{
-            //    cancellationTokenSource.Cancel();
-            //    throw new TimeoutException("The command failed. Please try again");
-            //}
-
+        _context.OrderHistory.Add(order);
+        if (await _context.SaveChangesAsync() == 0)
+        {
+            throw new DbUpdateException("Failed to remember. Try again");
         }
 
-		return postedData.Where(o => !string.IsNullOrEmpty(o)).ToList();
-	}
+        var getDataTask = Task.Run(async () =>
+        {
+            while (true)
+            {
+                // retrieve order results from the database where DeviceId matches
+                postedData = await _context.OrderHistory
+                    .Where(o => o.DeviceId == order.DeviceId)
+                    .Select(o => o.OrderResult)
+                    .ToListAsync(cancellationToken: cancellationToken);
+
+                // check if any of the order results are non-empty
+                bool hasNonEmptyOrderResult = postedData.Any(o => !string.IsNullOrEmpty(o));
+
+                if (hasNonEmptyOrderResult)
+                {
+                    return postedData;
+                }
+
+                await Task.Delay(100); // Add a small delay between iterations
+            }
+        }, cancellationToken);
+
+        var completedTask = await Task.WhenAny(getDataTask, Task.Delay(timeout, cancellationToken));
+
+        if (completedTask != getDataTask)
+        {
+            cancellationTokenSource.Cancel();
+            throw new TimeoutException("The command failed. Please try again");
+        }
+
+        return postedData.Where(o => !string.IsNullOrEmpty(o)).ToList();
+    }
 
 
 	//public async Task<List<ListenerModel>> AddListenerModel(ListenerModel order)
