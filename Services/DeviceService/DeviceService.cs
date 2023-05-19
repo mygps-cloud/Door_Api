@@ -70,34 +70,6 @@ public class DeviceService : IDeviceService
             return "4";
         return "Please Try Again";
     }
-
-    //public async Task<List<DeviceModel>> AddDevice(DeviceModel device)
-    //{
-    //    var a = _context.DoorInformationUPDATED.FirstOrDefault(x => x.IMEI == device.IMEI);
-    //    if (a != null)
-    //    {
-    //        return new List<DeviceModel>();
-    //    }
-    //    //device.DeviceId =DateTimeOffset.Now.ToUnixTimeMilliseconds();
-    //    _context.DoorInformationUPDATED.Add(device);
-    //    await _context.SaveChangesAsync();
-    //    return await _context.DoorInformationUPDATED.ToListAsync();
-    //} 
-    //   public async Task<List<OrderModel>> AddOrder(OrderModel order)
-    //   {
-    //    if (order == null || order.OrderType == null || order.OrderId == null /* add more properties as needed */)
-    //    {
-    //		throw new ArgumentException("There is no data");
-    //	}
-
-    //	_context.Orders.Add(order);
-    //	await _context.SaveChangesAsync();
-    //	var postedData = await _context.Orders
-    //		.Where(o => o.OrderId == order.OrderId)
-    //		.ToListAsync();
-    //	return postedData;
-    //}
-
     public async Task<List<string?>> AddOrderHistory(OrderHistory order)
     {
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -116,21 +88,17 @@ public class DeviceService : IDeviceService
         {
             while (true)
             {
-                // retrieve order results from the database where DeviceId matches
                 postedData = await _context.OrderHistory
                     .Where(o => o.DeviceId == order.DeviceId)
                     .Select(o => o.OrderResult)
                     .ToListAsync(cancellationToken: cancellationToken);
 
-                // check if any of the order results are non-empty
                 bool hasNonEmptyOrderResult = postedData.Any(o => !string.IsNullOrEmpty(o));
 
                 if (hasNonEmptyOrderResult)
                 {
                     return postedData;
                 }
-
-                await Task.Delay(100); // Add a small delay between iterations
             }
         }, cancellationToken);
 
@@ -145,13 +113,6 @@ public class DeviceService : IDeviceService
         return postedData.Where(o => !string.IsNullOrEmpty(o)).ToList();
     }
 
-
-	//public async Task<List<ListenerModel>> AddListenerModel(ListenerModel order)
-	//{
-	//    _context.DoorInformation.Add(order);
-	//    await _context.SaveChangesAsync();
-	//    return await _context.DoorInformation.ToListAsync();
-	//}
 }
 
 

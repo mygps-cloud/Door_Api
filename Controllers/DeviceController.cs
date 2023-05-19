@@ -114,20 +114,6 @@ namespace WebAPI.Controllers
 			}
 		}
 
-
-
-  //      [Route("AddOrder")]
-  //      [HttpPost]
-		//[ProducesResponseType(StatusCodes.Status200OK)]
-  //      [ProducesResponseType(StatusCodes.Status400BadRequest)]
-		//public async Task<IActionResult> AddOrder(OrderModel order)
-  //      {
-  //          var result = await _DeviceService.AddOrder(order);
-  //          if (result == null)
-	 //           return BadRequest(400);
-  //          return Ok(result);
-  //      }
-
         [Route("OrderHistory")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -151,25 +137,5 @@ namespace WebAPI.Controllers
                 return StatusCode(408, e.Message);
             }
         }
-
-        //[Route("AddListenerModel")]
-        //[HttpPost]
-        //public async Task<IActionResult> AddListenerModel(ListenerModel order)
-        //{
-        //    var result = await _DeviceService.AddListenerModel(order);
-        //    return Ok(result);
-        //}
-        //      [Route("AddDevice")]
-        //      [HttpPost]
-        //      [ProducesResponseType(StatusCodes.Status200OK)]
-        //      [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public async Task<IActionResult> AddDevice(DeviceModel device)
-        //      {
-        //          var result = await _DeviceService.AddDevice(device);
-        //          if (result.Count == 0)
-        //              return BadRequest("Device already existed");
-
-        //              return Ok(result);
-        //      }
     }
 }
