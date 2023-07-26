@@ -37,6 +37,28 @@ namespace WebAPI.Controllers
           
         }
 
+        [Route("GetStatus")]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status408RequestTimeout)]
+        public async Task<IActionResult> GetStatus([FromQuery] long imei)
+        {
+            try
+            {
+                var result = await _DeviceService.GetStatus(imei);
+                return Ok(result);
+            }
+            catch (DbUpdateException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+            catch (TimeoutException e)
+            {
+                return StatusCode(408, e.Message);
+            }
+        }
 
         [Route("GetOrders")]
         [HttpGet]
@@ -92,57 +114,28 @@ namespace WebAPI.Controllers
 			}
 		}
 
-
-
-  //      [Route("AddOrder")]
-  //      [HttpPost]
-		//[ProducesResponseType(StatusCodes.Status200OK)]
-  //      [ProducesResponseType(StatusCodes.Status400BadRequest)]
-		//public async Task<IActionResult> AddOrder(OrderModel order)
-  //      {
-  //          var result = await _DeviceService.AddOrder(order);
-  //          if (result == null)
-	 //           return BadRequest(400);
-  //          return Ok(result);
-  //      }
-
         [Route("OrderHistory")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status408RequestTimeout)]
 
-		public async Task<IActionResult> AddOrderHistory(OrderHistory order)
+        public async Task<IActionResult> AddOrderHistory(OrderHistory order)
         {
-	        try
-	        {
-		        var result = await _DeviceService.AddOrderHistory(order);
-		        return Ok(result);
-			}
-	        catch (DbUpdateException e)
-	        {
-		        return StatusCode(500, e.Message);
-	        }
+            try
+            {
+                var result = await _DeviceService.AddOrderHistory(order);
+                return Ok(result);
+            }
+            catch (DbUpdateException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+            catch (TimeoutException e)
+            {
+                return StatusCode(408, e.Message);
+            }
         }
-
-		//[Route("AddListenerModel")]
-		//[HttpPost]
-		//public async Task<IActionResult> AddListenerModel(ListenerModel order)
-		//{
-		//    var result = await _DeviceService.AddListenerModel(order);
-		//    return Ok(result);
-		//}
-		//      [Route("AddDevice")]
-		//      [HttpPost]
-		//      [ProducesResponseType(StatusCodes.Status200OK)]
-		//      [ProducesResponseType(StatusCodes.Status400BadRequest)]
-		//public async Task<IActionResult> AddDevice(DeviceModel device)
-		//      {
-		//          var result = await _DeviceService.AddDevice(device);
-		//          if (result.Count == 0)
-		//              return BadRequest("Device already existed");
-
-		//              return Ok(result);
-		//      }
-	}
+    }
 }

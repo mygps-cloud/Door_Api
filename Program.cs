@@ -6,17 +6,11 @@ using WebAPI.Data;
 using WebAPI.Services.DeviceService;
 using WebAPI.Services.UserService;
 
-// const string AngularApp = "AngularApp";
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDeviceService, DeviceService>();
-builder.Services.AddSingleton<DataAccessUser>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb")));
 

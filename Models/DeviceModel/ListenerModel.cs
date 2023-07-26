@@ -15,6 +15,4 @@ public class ListenerModel
     public short? RIGHT_DOOR { get; set; }
     public short? LEFT_DOOR { get; set; }
     public DateTime RECORDING_TIME { get; set; } = DateTime.Now;
-
-
 }

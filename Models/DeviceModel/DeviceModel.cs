@@ -15,7 +15,4 @@ public class DeviceModel
     public short? LEFT_DOOR { get; set; }
     public DateTime RECORDING_TIME { get; set; } = DateTime.Now;
 
-    // public long? DeviceId { get; set;} 
-    //public string? DeviceName { get; set; }
-
 }
